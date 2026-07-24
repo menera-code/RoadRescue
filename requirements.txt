@@ -76,7 +76,7 @@ multidict==6.7.1
 multiprocess==0.70.18
 namex==0.1.0
 networkx==3.6.1
-numpy==1.24.4
+numpy==1.25.2
 openai==2.15.0
 opencv-python==4.8.1.78
 opt_einsum==3.4.0

@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+﻿<<<<<<< HEAD
 absl-py==2.4.0
 accelerate==1.12.0
 aiofiles==25.1.0
@@ -154,8 +154,7 @@ Werkzeug==3.1.5
 wrapt==2.0.1
 xxhash==3.6.0
 yarl==1.22.0
-=======
-﻿absl-py==2.4.0
+absl-py==2.4.0
 accelerate==1.12.0
 aiofiles==25.1.0
 aiohappyeyeballs==2.6.1

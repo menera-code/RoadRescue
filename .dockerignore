@@ -23,7 +23,6 @@ __pycache__/
 *.pem
 *.key
 *.crt
-*.pt
 *.safetensors
 *.mp4
 *.dll

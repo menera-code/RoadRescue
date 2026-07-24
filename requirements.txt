@@ -76,7 +76,7 @@ multidict==6.7.1
 multiprocess==0.70.18
 namex==0.1.0
 networkx==3.6.1
-numpy==2.4.1
+numpy<2.0
 openai==2.15.0
 opencv-contrib-python==4.13.0.90
 opencv-python==4.13.0.90

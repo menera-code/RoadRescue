@@ -82,7 +82,7 @@ opencv-python==4.8.1.78
 opt_einsum==3.4.0
 optree==0.18.0
 packaging==26.0
-pandas==3.0.0
+pandas==2.2.2
 passlib==1.7.4
 pillow==12.1.0
 pluggy==1.6.0

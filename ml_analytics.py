@@ -10,7 +10,7 @@ from sqlalchemy import func, and_
 from database import SessionLocal
 from models import IncidentReport, TrainingDataset, MLModelVersion
 from services.enhanced_incident_ml_service import EnhancedIncidentMLService
-from ml_models.text_classifier_enhanced import EnhancedIncidentClassifier
+from services.predictor import predict_text
 
 
 class MLAnalyticsService:
@@ -18,7 +18,7 @@ class MLAnalyticsService:
         self.ml_service = EnhancedIncidentMLService(use_enhanced=True)
 
     # ----------------------------------------------------------------------
-    # USER-LEVEL STATISTICS (existing, slightly adjusted)
+    # USER-LEVEL STATISTICS
     # ----------------------------------------------------------------------
     def get_user_ml_stats(self, user_id: int, days: int = 30, db: Session = None) -> Dict[str, Any]:
         """Get ML prediction statistics for a specific user."""
@@ -83,7 +83,7 @@ class MLAnalyticsService:
                 db.close()
 
     # ----------------------------------------------------------------------
-    # MODEL PERFORMANCE FROM DATABASE (new)
+    # MODEL PERFORMANCE FROM DATABASE
     # ----------------------------------------------------------------------
     def get_model_performance(self, db: Session = None) -> Dict[str, Any]:
         close_db = False
@@ -129,7 +129,7 @@ class MLAnalyticsService:
                 db.close()
 
     # ----------------------------------------------------------------------
-    # DATASET STORAGE STATUS (enhanced with DB counts)
+    # DATASET STORAGE STATUS
     # ----------------------------------------------------------------------
     def get_dataset_status(self, db: Session = None) -> Dict[str, Any]:
         """Return storage info for image/video directories AND training dataset counts."""
@@ -139,7 +139,6 @@ class MLAnalyticsService:
             close_db = True
 
         try:
-            # Directory sizes (existing)
             base_dir = os.path.dirname(os.path.abspath(__file__))
             incident_images = os.path.join(base_dir, "datasets/incident_images")
             training_data_dir = os.path.join(base_dir, "training_data")
@@ -153,7 +152,6 @@ class MLAnalyticsService:
                 "storage_warning": False
             }
 
-            # Add database counts
             verified = db.query(TrainingDataset).filter(TrainingDataset.is_verified == True).count()
             used = db.query(TrainingDataset).filter(TrainingDataset.used_in_training == True).count()
             status["verified_samples"] = verified
@@ -163,7 +161,7 @@ class MLAnalyticsService:
                         status["training_data"]["size_mb"] +
                         status["uploads"]["size_mb"])
             status["total_size_mb"] = total_mb
-            if total_mb > 8000:  # 8GB
+            if total_mb > 8000:
                 status["storage_warning"] = True
 
             return status
@@ -173,7 +171,7 @@ class MLAnalyticsService:
                 db.close()
 
     # ----------------------------------------------------------------------
-    # TRAINING DATA STATUS (separate endpoint)
+    # TRAINING DATA STATUS
     # ----------------------------------------------------------------------
     def get_training_data_status(self, db: Session = None) -> Dict[str, Any]:
         """Return counts of verified and used training samples."""
@@ -194,7 +192,7 @@ class MLAnalyticsService:
                 db.close()
 
     # ----------------------------------------------------------------------
-    # SUMMARY STATISTICS OVER TIME (new)
+    # SUMMARY STATISTICS OVER TIME
     # ----------------------------------------------------------------------
     def get_training_stats(self, days: int = 30, db: Session = None) -> Dict[str, Any]:
         """Return summary stats for recent predictions (by type, severity, confidence)."""
@@ -266,11 +264,10 @@ class MLAnalyticsService:
         return info
 
     # ----------------------------------------------------------------------
-    # SYNTHETIC DATA GENERATION (existing)
+    # SYNTHETIC DATA GENERATION (FIXED - uses predictor.py)
     # ----------------------------------------------------------------------
     def generate_synthetic_sample(self, count: int = 100) -> Dict[str, Any]:
         """Generate small synthetic dataset for testing (storage safe)."""
-        classifier = EnhancedIncidentClassifier()
         synthetic = []
 
         templates = {
@@ -282,12 +279,13 @@ class MLAnalyticsService:
         for _ in range(count):
             inc_type = random.choice(list(templates.keys()))
             text = random.choice(templates[inc_type])
-            prediction = classifier.predict(text)
+            # Use predictor.py instead of classifier
+            prediction = predict_text(text)
 
             synthetic.append({
                 "text": text,
-                "predicted_type": prediction["type"],
-                "confidence": prediction["confidence"],
+                "predicted_type": prediction.get("incident_type", "Accident"),
+                "confidence": prediction.get("type_confidence", 0.5),
                 "true_label": inc_type
             })
 

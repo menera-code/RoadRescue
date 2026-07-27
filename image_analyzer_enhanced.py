@@ -102,14 +102,8 @@ class EnhancedImageAnalyzer:
             
         except Exception as e:
             print(f"Enhanced image analysis error: {e}")
-            # FIXED: Use correct import path
-            try:
-                from ml_models.image_processor import IncidentImageAnalyzer
-                fallback = IncidentImageAnalyzer()
-                return fallback.analyze_image(image_path)
-            except ImportError:
-                print("Could not load fallback analyzer")
-                return self.default_response()
+            # Return default response instead of trying to import from ml_models
+            return self.default_response()
     
     def yolo_detection(self, img) -> Dict[str, Any]:
         """Run YOLO object detection"""

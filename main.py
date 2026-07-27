@@ -65,7 +65,6 @@ from typing import List
 # Add these to your existing imports
 from fastapi import Form, BackgroundTasks
 
-from ml_analytics import ml_analytics
 
 from fastapi import Depends, HTTPException, status
 from deps import get_current_user  # or wherever your get_current_user is
@@ -1208,49 +1207,7 @@ async def get_ml_service_status():
         "timestamp": datetime.now().isoformat()
     }
 
-@app.post("/api/ml/test-classification")
-async def test_classification(text: str = Form(...)):
-    """
-    Test endpoint for incident classification
-    """
-    try:
-        from ml_models.text_classifier import IncidentTextClassifier
-        classifier = IncidentTextClassifier()
-        result = classifier.predict(text)
-        keywords = classifier.extract_keywords(text)
-        
-        return {
-            "text": text,
-            "prediction": result["type"],
-            "confidence": result["confidence"],
-            "keywords": keywords,
-            "all_predictions": result["all_predictions"],
-            "timestamp": datetime.now().isoformat()
-        }
-        
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-    
-# Background task function
-async def process_report_background(report_id: str, result: dict):
-    """
-    Background processing for incident reports
-    """
-    try:
-        # Simulate background processing
-        print(f"📊 Processing report {report_id} in background...")
-        
-        # You can add:
-        # 1. Save to database
-        # 2. Send notifications
-        # 3. Update analytics
-        # 4. Train models with new data
-        
-        await asyncio.sleep(1)
-        print(f"✅ Report {report_id} processed successfully")
-        
-    except Exception as e:
-        print(f"❌ Background processing failed for {report_id}: {e}")
+
 
 @app.get("/api/reports", response_model=List[IncidentReportResponse])
 async def get_incidents(
@@ -1685,9 +1642,6 @@ async def get_active_alerts(
     return alerts
     
  
-
-
-from ml_analytics import ml_analytics
 from fastapi import Depends, HTTPException, status
 from deps import get_current_user  # adjust import based on your actual structure
 

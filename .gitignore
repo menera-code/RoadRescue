@@ -50,8 +50,9 @@ Thumbs.db
 venv/
 
 # Large model files
-*.pt
+
 *.exe
 *.pfx
 
 # Data files
+ml_models/

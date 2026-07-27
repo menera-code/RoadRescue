@@ -51,8 +51,8 @@ from deps import get_current_user, get_db
 from models import User
 from sqlalchemy.orm import Session
 from ml_analytics import ml_analytics
-from ml_train.train_text import train_text_model
-from ml_train.train_image import train_image_model
+
+
 
 from models import LegalCompliance
 from schemas import LegalComplianceCreate, LegalComplianceUpdate, LegalComplianceResponse
@@ -1238,14 +1238,11 @@ async def admin_training_data_status(
 
 @router.post("/ml/train")
 async def start_training(
-    background_tasks: BackgroundTasks,
     current_user: User = Depends(get_current_user)
 ):
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Admin only")
-    background_tasks.add_task(train_text_model)
-    background_tasks.add_task(train_image_model)
-    return {"message": "Training started in background"}
+    return {"message": "Training endpoint disabled - using predictor.py"}
 
 @router.put("/api/reports/{report_id}/verify")
 async def verify_report(

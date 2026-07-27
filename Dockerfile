@@ -36,5 +36,5 @@ COPY . .
 # Expose the port
 EXPOSE 10000
 
-# Start the application
-CMD ["gunicorn", "main:app", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:10000"]
+# ✅ CHANGE THIS: Run with uvicorn directly to see full error details
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "10000"]

@@ -33,8 +33,8 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # Copy the rest of the application
 COPY . .
 
-# Expose the port
-EXPOSE 10000
+# ✅ CHANGE: Use port 8000
+EXPOSE 8000
 
-# ✅ CHANGE THIS: Run with uvicorn directly to see full error details
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "10000"]
+# ✅ CHANGE: Use port 8000
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
